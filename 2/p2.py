@@ -19,13 +19,7 @@ def task(s: str) -> int:
     pw = line.split(':')[1].strip()
     if pos1 >= len(pw) or pos2 >= len(pw):
       continue
-    occurances = 0
-    if pw[pos1] == char:
-      occurances += 1
-    if pw[pos2] == char:
-      occurances += 1
-    if occurances == 1:
-      print(occurances, line)
+    if pw[pos1] == char ^ pw[pos2] == char:
       valid += 1
   return valid
 
