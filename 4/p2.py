@@ -7,19 +7,16 @@ import pytest
 
 def validate_field(field) -> bool:
   key, val = field.split(':')
-  if key == 'byr':
-    if len(val) == 4 and int(val) >= 1920 and int(val) <= 2002:
-      return True
-  if key == 'iyr':
-    if len(val) == 4 and int(val) >= 2010 and int(val) <= 2020:
-      return True
-  if key == 'eyr':
-    if len(val) == 4 and int(val) >= 2020 and int(val) <= 2030:
-      return True
+  if key == 'byr' and 1920 <= int(val) <= 2002:
+    return True
+  if key == 'iyr' and 2010 <= int(val) <= 2020:
+    return True
+  if key == 'eyr' and 2020 <= int(val) <= 2030:
+    return True
   if key == 'hgt':
-    if val[-2:] == 'cm' and int(val[:-2]) >= 150 and int(val[:-2]) <= 193:
+    if val[-2:] == 'cm' and 150 <= int(val[:-2]) <= 193:
       return True
-    if val[-2:] == 'in' and int(val[:-2]) >= 59 and int(val[:-2]) <= 76:
+    if val[-2:] == 'in' and 59 <= int(val[:-2]) <= 76:
       return True
   if key == 'hcl':
     if val[0] == '#' and re.match('^[0-9a-f]{6}$', val[1:]):
@@ -30,6 +27,7 @@ def validate_field(field) -> bool:
   if key == 'pid':
     if re.match('^[0-9]{9}$', val):
       return True
+  return False
 
 
 def task(s: str) -> int:
