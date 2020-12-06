@@ -11,11 +11,11 @@ def task(s: str) -> int:
   grps = s.strip().split('\n\n')
   cnt = 0
   for grp in grps:
-    num_people = grp.count('\n') + 1
-    c = Counter(grp.replace('\n', ''))
-    for key in c:
-      if c[key] == num_people:
-        cnt += 1
+    grp_lines = grp.splitlines()
+    cur = set(grp_lines[0])
+    for other in grp_lines[1:]:
+      cur &= set(other)
+    cnt += len(cur)
   return cnt 
     
 
