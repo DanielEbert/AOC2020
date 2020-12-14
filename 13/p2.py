@@ -6,24 +6,43 @@ from math import gcd
 import pytest
 
 
+# chinese remainer theorem from https://rosettacode.org/wiki/Chinese_remainder_theorem#Python
+
+from functools import reduce
+def chinese_remainder(n, a):
+    sum = 0
+    prod = reduce(lambda a, b: a*b, n)
+    for n_i, a_i in zip(n, a):
+        p = prod // n_i
+        sum += a_i * mul_inv(p, n_i) * p
+    return sum % prod
+ 
+
+def mul_inv(a, b):
+    b0 = b
+    x0, x1 = 0, 1
+    if b == 1: return 1
+    while a > 1:
+        q = a // b
+        a, b = b, a%b
+        x0, x1 = x1 - q * x0, x0
+    if x1 < 0: x1 += b0
+    return x1
+
+
 def task(s: str) -> int:
   lines = s.splitlines()
-  ids = []
-  cnt = 0
+  n = []
+  a = []
+  cnt = len(lines) + 1
   for i in lines[1].split(','):
     if i != 'x':
-      ids.append((int(i)+cnt, cnt))
-      print(i, cnt)
-    cnt += 1
+      n.append(int(i))
+      a.append(cnt)
+    cnt -= 1
+  print(n,a)
 
-  cur_gcd = ids[0][0]
-  cur_mlt = ids[0][0]
-
-  for i, cnt in ids[1:]:
-    cur_mlt *= i
-    cur_gcd = gcd(cur_gcd, i)
-
-  return cur_mlt #// cur_gcd
+  return chinese_remainder(n,a) - len(lines) - 1 #// cur_gcd
 
 
   #5,3,2
@@ -34,8 +53,10 @@ def task(s: str) -> int:
 
 
   # 7,2(3)
-  # 7, 14
-  # 2,4,8,10,12,14
+  # 7
+  # 2,4,8
+  
+  # x*7 = y*2+1
 
 
 
@@ -69,11 +90,6 @@ INPUT_S6 = '''\
 1789,37,47,1889
 '''
 
-INPUT_S7 = '''\
-1
-5,3,2
-'''
-
 @pytest.mark.parametrize(
   ('inp', 'exp'),
   (
@@ -83,7 +99,6 @@ INPUT_S7 = '''\
     (INPUT_S4, 779210),
     (INPUT_S5, 1261476),
     (INPUT_S6, 1202161486),
-    (INPUT_S7, 80),
   )
 )
 def test(inp: str, exp: int) -> None:
